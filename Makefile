@@ -4,7 +4,7 @@
 .SUFFIXES: .msrc .scala
 
 MACSRC=macsrc
-all:  package.scala discord.scala
+all:  lib/package.scala lib/discord.scala
 
 .msrc.scala:
 	$(MACSRC) < $< > $@
