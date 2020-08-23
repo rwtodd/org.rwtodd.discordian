@@ -1,0 +1,78 @@
+package org.rwtodd.discordian
+
+import java.time.{LocalDate => GDate}
+import java.time.temporal.ChronoUnit
+
+class Date(gd: GDate) {
+	def this() = this(GDate.now)
+	def this(y:Int, m:Int, d:Int) = this(GDate.of(y,m,d))
+
+	val adjusted_yday = gd.getDayOfYear() - (if(gd.isLeapYear() && gd.getMonthValue() > 2) 2 else 1)
+	val day_of_season = (adjusted_yday % 73) + 1
+
+	def year = gd.getYear() + 1166
+	def isTibs = gd.getMonthValue == 2 && gd.getDayOfMonth() == 29
+	def getSeason(short: Boolean = false)  = SEASONS( 2*(adjusted_yday/73) + (if(short) 1 else 0) )
+	def getWeekday(short: Boolean = false) = DAYS( 2*(adjusted_yday%5) + (if(short) 1 else 0) )
+	def isHolyday = day_of_season == 5 || day_of_season == 50
+	def getHolyday() = day_of_season match {
+		case 5  => HOLYDAY_5(adjusted_yday/73)
+		case 50 => HOLYDAY_50(adjusted_yday/73)
+		case _  => ""
+	}
+	def daysTilXDay = gd.until(GDate.of(8661,7,5),ChronoUnit.DAYS)
+
+	def format(fstr: String): String = {
+		val last = fstr.length
+		val buff = new StringBuilder(last*2)
+		var idx = 0
+		while(idx < last) {
+			if(fstr(idx) == '%') {
+				@.(handle a special character)
+			} else {
+				buff.append(fstr(idx))
+			}
+			idx += 1
+		}
+		buff.toString
+	}
+
+@./ handle a special character / ~~~~~~~~~~~~~~~~~~~~~~~~~
+idx += 1
+fstr(idx) match {
+	case '%' => buff.append('%')
+	case 'A' => buff.append(getWeekday())
+	case 'a' => buff.append(getWeekday(true))
+	case 'B' => buff.append(getSeason())
+	case 'b' => buff.append(getSeason(true))
+	case 'd' => buff.append(day_of_season)
+	case 'e' => buff.append(day_of_season).append(@.(calculate ordinal suffix))
+	case 'H' => buff.append(getHolyday())
+	case 'n' => buff.append('\n')
+	case 't' => buff.append('\t')
+	case 'X' => buff.append(daysTilXDay)
+	case 'Y' => buff.append(year)
+	case '.' => buff.append(EXCLAIM( (Math.random()*EXCLAIM.length).toInt ))
+	case '}' => /* nothing */
+	case 'N' => if(!isHolyday) { idx = last }
+	case '{' => if(isTibs) { 
+		buff.append(TIBS) 
+		idx = fstr.indexOf("%}",idx) + 1
+		if(idx < 0) { idx = last }
+	}
+	case whatever => buff.append(whatever)
+}
+@. ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+@./ calculate ordinal suffix / ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+(day_of_season % 10) match {
+	case _ if (day_of_season/10) == 1 => "th"
+	case 1 => "st"
+	case 2 => "nd"
+	case 3 => "rd"
+	case _ => "th"
+}
+@. ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+}
+
+// vim: filetype=scala:noet:tabstop=4:softtabstop=0:shiftwidth=0:
