@@ -7,20 +7,20 @@ class Date(gd: GDate) {
 	def this() = this(GDate.now)
 	def this(y:Int, m:Int, d:Int) = this(GDate.of(y,m,d))
 
-	val adjusted_yday = gd.getDayOfYear() - (if(gd.isLeapYear() && gd.getMonthValue() > 2) 2 else 1)
-	val day_of_season = (adjusted_yday % 73) + 1
+	private val adjusted_yday = gd.getDayOfYear() - (if(gd.isLeapYear() && gd.getMonthValue() > 2) 2 else 1)
+	val dayOfSeason   = (adjusted_yday % 73) + 1
+	val isTibs        = gd.getMonthValue == 2 && gd.getDayOfMonth() == 29
 
 	def year = gd.getYear() + 1166
-	def isTibs = gd.getMonthValue == 2 && gd.getDayOfMonth() == 29
-	def getSeason(short: Boolean = false)  = SEASONS( 2*(adjusted_yday/73) + (if(short) 1 else 0) )
-	def getWeekday(short: Boolean = false) = DAYS( 2*(adjusted_yday%5) + (if(short) 1 else 0) )
-	def isHolyday = day_of_season == 5 || day_of_season == 50
-	def getHolyday() = day_of_season match {
+	def getSeason(short: Boolean = false)  = if(isTibs) TIBS else SEASONS( 2*(adjusted_yday/73) + (if(short) 1 else 0) )
+	def getWeekday(short: Boolean = false) = if(isTibs) TIBS else DAYS( 2*(adjusted_yday%5) + (if(short) 1 else 0) )
+	def isHolyday = dayOfSeason == 5 || dayOfSeason == 50
+	def getHolyday() = dayOfSeason match {
 		case 5  => HOLYDAY_5(adjusted_yday/73)
 		case 50 => HOLYDAY_50(adjusted_yday/73)
 		case _  => ""
 	}
-	def daysTilXDay = gd.until(GDate.of(8661,7,5),ChronoUnit.DAYS)
+	def daysTilXDay() = gd.until(GDate.of(8661,7,5),ChronoUnit.DAYS)
 
 	def format(fstr: String): String = {
 		val last = fstr.length
@@ -45,12 +45,12 @@ fstr(idx) match {
 	case 'a' => buff.append(getWeekday(true))
 	case 'B' => buff.append(getSeason())
 	case 'b' => buff.append(getSeason(true))
-	case 'd' => buff.append(day_of_season)
-	case 'e' => buff.append(day_of_season).append(@.(calculate ordinal suffix))
+	case 'd' => buff.append(dayOfSeason)
+	case 'e' => buff.append(dayOfSeason).append(@.(calculate ordinal suffix))
 	case 'H' => buff.append(getHolyday())
 	case 'n' => buff.append('\n')
 	case 't' => buff.append('\t')
-	case 'X' => buff.append(daysTilXDay)
+	case 'X' => buff.append(daysTilXDay())
 	case 'Y' => buff.append(year)
 	case '.' => buff.append(EXCLAIM( (Math.random()*EXCLAIM.length).toInt ))
 	case '}' => /* nothing */
@@ -65,8 +65,8 @@ fstr(idx) match {
 @. ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 @./ calculate ordinal suffix / ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-(day_of_season % 10) match {
-	case _ if (day_of_season/10) == 1 => "th"
+(dayOfSeason % 10) match {
+	case _ if (dayOfSeason/10) == 1 => "th"
 	case 1 => "st"
 	case 2 => "nd"
 	case 3 => "rd"
