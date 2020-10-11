@@ -1,10 +1,21 @@
-# AGI-Tools
+# org.rwtodd.discordian
 
-This is a set of tools for exploring Sierra AGI adventure game
-resources.
+Discordian date library/CLI tool for Java.
 
-The current *master* branch is focused on a Java version.  There are
-other branches with Go and Clojure versions of the code, with
-different capabilities and levels of maturity.
+~~~~ java
+new DiscordianDate(1956,2,19).format(
+   "%{%A, the %e of %B%} in %Y YOLD.%n%X days left... %.%N%nEnjoy %H");
+
+// ==> "Setting Orange, the 50th of Chaos in 3122 YOLD.
+// 2449088 days left... Or not.
+// Enjoy Chaoflux"
+~~~~
+
+
+## Other Languages ##
+
+There is a scala version in the **scala-version** branch of this
+repo.  There's also a clojure version in the **clojure-version**
+branch.
 
 
