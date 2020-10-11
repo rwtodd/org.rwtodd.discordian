@@ -1,0 +1,3 @@
+rootProject.name = 'org.rwtodd.discordian'
+include 'discordian', 'ddate'
+
