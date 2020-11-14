@@ -9,6 +9,13 @@ import org.rwtodd.discordian.DiscordianDate;
  */
 public class Cmd {
 
+    private static String removeInitialPlus(String s) {
+        if (s.isEmpty() || (s.charAt(0) != '+')) {
+            throw new IllegalArgumentException("Format string must start with a +!");
+        }
+        return s.substring(1);
+    }
+
     public static void main(String[] args) {
         final var todayFmt = "Today is %{%A, the %e day of %B%} in the YOLD %Y%N%nCelebrate %H";
         final var otherFmt = "%{%A, %B %d%}, %Y YOLD";
@@ -17,7 +24,7 @@ public class Cmd {
                 case 0 ->
                     new DiscordianDate().format(todayFmt);
                 case 1 ->
-                    new DiscordianDate().format(args[0]);
+                    new DiscordianDate().format(removeInitialPlus(args[0]));
                 case 3 ->
                     new DiscordianDate(Integer.valueOf(args[0]),
                     Integer.valueOf(args[1]),
@@ -25,15 +32,14 @@ public class Cmd {
                 case 4 ->
                     new DiscordianDate(Integer.valueOf(args[1]),
                     Integer.valueOf(args[2]),
-                    Integer.valueOf(args[3])).format(args[0]);
+                    Integer.valueOf(args[3])).format(removeInitialPlus(args[0]));
                 default ->
                     throw new Exception("Wrong number of arguments!");
             });
         } catch (Throwable e) {
             System.err.println("Error: " + e.getMessage());
-            System.err.println("Usage: ddate [fmt] [year month day]");
+            System.err.println("Usage: ddate [+fmt] [year month day]");
             System.exit(1);
         }
     }
 }
-
