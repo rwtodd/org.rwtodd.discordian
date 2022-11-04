@@ -21,20 +21,15 @@ public class Cmd {
         final var otherFmt = "%{%A, %B %d%}, %Y YOLD";
         try {
             System.out.println(switch (args.length) {
-                case 0 ->
-                    new DiscordianDate().format(todayFmt);
-                case 1 ->
-                    new DiscordianDate().format(removeInitialPlus(args[0]));
-                case 3 ->
-                    new DiscordianDate(Integer.valueOf(args[0]),
-                    Integer.valueOf(args[1]),
-                    Integer.valueOf(args[2])).format(otherFmt);
-                case 4 ->
-                    new DiscordianDate(Integer.valueOf(args[1]),
-                    Integer.valueOf(args[2]),
-                    Integer.valueOf(args[3])).format(removeInitialPlus(args[0]));
-                default ->
-                    throw new Exception("Wrong number of arguments!");
+                case 0 -> new DiscordianDate().format(todayFmt);
+                case 1 -> new DiscordianDate().format(removeInitialPlus(args[0]));
+                case 3 -> new DiscordianDate(Integer.parseInt(args[0]),
+                        Integer.parseInt(args[1]),
+                        Integer.parseInt(args[2])).format(otherFmt);
+                case 4 -> new DiscordianDate(Integer.parseInt(args[1]),
+                        Integer.parseInt(args[2]),
+                        Integer.parseInt(args[3])).format(removeInitialPlus(args[0]));
+                default -> throw new Exception("Wrong number of arguments!");
             });
         } catch (Throwable e) {
             System.err.println("Error: " + e.getMessage());

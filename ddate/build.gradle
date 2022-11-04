@@ -11,7 +11,7 @@ dependencies {
 
 application {
     // Define the main class for the application.
-    mainModule = 'org.rwtodd.ddate'
-    mainClassName = 'org.rwtodd.ddate.Cmd'
+    mainModule.set('org.rwtodd.ddate')
+    mainClass.set('org.rwtodd.ddate.Cmd')
     applicationDefaultJvmArgs = ['-Dswing.metalTheme=steel']
 }

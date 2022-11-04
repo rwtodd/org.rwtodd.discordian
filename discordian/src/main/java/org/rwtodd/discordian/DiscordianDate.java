@@ -12,40 +12,36 @@ import java.time.temporal.ChronoUnit;
 public class DiscordianDate {
 
     /* some static constants... */
-    private static String TIBS = "St. Tib's Day";
-    private static String[] SEASONS
+    private static final String TIBS = "St. Tib's Day";
+    private static final String[] SEASONS
             = {"Chaos", "Chs", "Discord", "Dsc", "Confusion", "Cfn",
-                "Bureaucracy", "Bcy", "The Aftermath", "Afm"};
-    private static String[] DAYS
+            "Bureaucracy", "Bcy", "The Aftermath", "Afm"};
+    private static final String[] DAYS
             = {"Sweetmorn", "SM", "Boomtime", "BT",
-                "Pungenday", "PD", "Prickle-Prickle", "PP",
-                "Setting Orange", "SO"};
-    private static String[] HOLYDAY_5
+            "Pungenday", "PD", "Prickle-Prickle", "PP",
+            "Setting Orange", "SO"};
+    private static final String[] HOLYDAY_5
             = {"Mungday", "Mojoday", "Syaday", "Zaraday", "Maladay"};
-    private static String[] HOLYDAY_50
+    private static final String[] HOLYDAY_50
             = {"Chaoflux", "Discoflux", "Confuflux", "Bureflux", "Afflux"};
-    private static String[] EXCLAIM
+    private static final String[] EXCLAIM
             = {"Hail Eris!", "All Hail Discordia!", "Kallisti!", "Fnord.", "Or not.",
-                "Wibble.", "Pzat!", "P'tang!", "Frink!", "Slack!", "Praise \"Bob\"!", "Or kill me.",
-                // randomness, from the Net and other places. Feel free to add (after
-                // checking with the relevant authorities, of course).
-                "Grudnuk demand sustenance!", "Keep the Lasagna flying!",
-                "You are what you see.", "Or is it?", "This statement is false.",
-                "Lies and slander, sire!", "Hee hee hee!", "Hail Eris, Hack Java!"};
+            "Wibble.", "Pzat!", "P'tang!", "Frink!", "Slack!", "Praise \"Bob\"!", "Or kill me.",
+            // randomness, from the Net and other places. Feel free to add (after
+            // checking with the relevant authorities, of course).
+            "Grudnuk demand sustenance!", "Keep the Lasagna flying!",
+            "You are what you see.", "Or is it?", "This statement is false.",
+            "Lies and slander, sire!", "Hee hee hee!", "Hail Eris, Hack Java!"};
 
     private static String ordinalSuffix(int number) {
         if (number / 10 == 1) {
             return "th";
         }
         return switch (number % 10) {
-            case 1 ->
-                "st";
-            case 2 ->
-                "nd";
-            case 3 ->
-                "rd";
-            default ->
-                "th";
+            case 1 -> "st";
+            case 2 -> "nd";
+            case 3 -> "rd";
+            default -> "th";
         };
     }
 
@@ -121,12 +117,9 @@ public class DiscordianDate {
 
     public String getHolyDay() {
         return switch (season_day) {
-            case 5 ->
-                HOLYDAY_5[adjusted_yday / 73];
-            case 50 ->
-                HOLYDAY_50[adjusted_yday / 73];
-            default ->
-                "";
+            case 5 -> HOLYDAY_5[adjusted_yday / 73];
+            case 50 -> HOLYDAY_50[adjusted_yday / 73];
+            default -> "";
         };
     }
 
@@ -142,33 +135,20 @@ public class DiscordianDate {
             if (fstr.charAt(idx) == '%') {
                 ++idx;
                 switch (fstr.charAt(idx)) {
-                    case '%' ->
-                        buff.append('%');
-                    case 'A' ->
-                        buff.append(getWeekday());
-                    case 'a' ->
-                        buff.append(getShortWeekday());
-                    case 'B' ->
-                        buff.append(getSeason());
-                    case 'b' ->
-                        buff.append(getShortSeason());
-                    case 'd' ->
-                        buff.append(getDayOfSeason());
-                    case 'e' ->
-                        buff.append(season_day)
-                                .append(ordinalSuffix(season_day));
-                    case 'H' ->
-                        buff.append(getHolyDay());
-                    case 'n' ->
-                        buff.append('\n');
-                    case 't' ->
-                        buff.append('\t');
-                    case 'X' ->
-                        buff.append(daysTilXDay());
-                    case 'Y' ->
-                        buff.append(getYear());
-                    case '.' ->
-                        buff.append(EXCLAIM[(int) (Math.random() * EXCLAIM.length)]);
+                    case '%' -> buff.append('%');
+                    case 'A' -> buff.append(getWeekday());
+                    case 'a' -> buff.append(getShortWeekday());
+                    case 'B' -> buff.append(getSeason());
+                    case 'b' -> buff.append(getShortSeason());
+                    case 'd' -> buff.append(getDayOfSeason());
+                    case 'e' -> buff.append(season_day)
+                            .append(ordinalSuffix(season_day));
+                    case 'H' -> buff.append(getHolyDay());
+                    case 'n' -> buff.append('\n');
+                    case 't' -> buff.append('\t');
+                    case 'X' -> buff.append(daysTilXDay());
+                    case 'Y' -> buff.append(getYear());
+                    case '.' -> buff.append(EXCLAIM[(int) (Math.random() * EXCLAIM.length)]);
                     case '}' -> {/* nothing */
                     }
                     case 'N' -> {
@@ -180,13 +160,12 @@ public class DiscordianDate {
                         if (tibs_p) {
                             buff.append(TIBS);
                             idx = fstr.indexOf("%}", idx) + 1;
-                            if (idx < 0) {
+                            if (idx == 0) {
                                 idx = last;
                             }
                         }
                     }
-                    default ->
-                        buff.append(fstr.charAt(idx));
+                    default -> buff.append(fstr.charAt(idx));
                 }
             } else {
                 buff.append(fstr.charAt(idx));
