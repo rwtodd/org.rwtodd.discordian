@@ -1,5 +1,6 @@
 package org.rwtodd.discordian;
 
+import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.temporal.ChronoUnit;
@@ -146,7 +147,11 @@ public class DiscordianDate {
                     case 'H' -> buff.append(getHolyDay());
                     case 'n' -> buff.append('\n');
                     case 't' -> buff.append('\t');
-                    case 'X' -> buff.append(daysTilXDay());
+                    case 'X' -> {
+                        final var nf = NumberFormat.getIntegerInstance();
+                        nf.setGroupingUsed(true);
+                        buff.append(nf.format(daysTilXDay()));
+                    }
                     case 'Y' -> buff.append(getYear());
                     case '.' -> buff.append(EXCLAIM[(int) (Math.random() * EXCLAIM.length)]);
                     case '}' -> {/* nothing */
