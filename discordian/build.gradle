@@ -1,22 +1,20 @@
 plugins {
-    // Apply the java-library plugin to add support for Java Library
+    // Apply the groovy Plugin to add support for Groovy.
+    id 'groovy'
+
+    // Apply the java-library plugin for API and implementation separation.
     id 'java-library'
 }
 
-archivesBaseName = 'org.rwtodd.discordian'
-
-dependencies {
-    // Use JUnit Jupiter API for testing.
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
-
-    // Use JUnit Jupiter Engine for testing.
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-params:5.8.2'
-    testRuntimeOnly 'org.junit.platform:junit-platform-suite:1.8.2'
+repositories {
+    // Use Maven Central for resolving dependencies.
+    mavenCentral()
 }
 
-test {
-   testLogging {
-      events "passed", "skipped", "failed"
-   }
+dependencies {
+    testImplementation 'org.apache.groovy:groovy:4.0.6'
+
+    // Use the awesome Spock testing and specification framework even with Java
+    testImplementation 'org.spockframework:spock-core:2.3-groovy-4.0'
+    testImplementation 'junit:junit:4.13.2'
 }

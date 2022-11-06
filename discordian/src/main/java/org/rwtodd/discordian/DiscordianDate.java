@@ -116,7 +116,7 @@ public class DiscordianDate {
         return (season_day == 5) || (season_day == 50);
     }
 
-    public String getHolyDay() {
+    public String getHolyDayName() {
         return switch (season_day) {
             case 5 -> HOLYDAY_5[adjusted_yday / 73];
             case 50 -> HOLYDAY_50[adjusted_yday / 73];
@@ -124,7 +124,7 @@ public class DiscordianDate {
         };
     }
 
-    public long daysTilXDay() {
+    public long getDaysTilXDay() {
         return gdate.until(LocalDate.of(8661, 7, 5), ChronoUnit.DAYS);
     }
 
@@ -144,13 +144,13 @@ public class DiscordianDate {
                     case 'd' -> buff.append(getDayOfSeason());
                     case 'e' -> buff.append(season_day)
                             .append(ordinalSuffix(season_day));
-                    case 'H' -> buff.append(getHolyDay());
+                    case 'H' -> buff.append(getHolyDayName());
                     case 'n' -> buff.append('\n');
                     case 't' -> buff.append('\t');
                     case 'X' -> {
                         final var nf = NumberFormat.getIntegerInstance();
                         nf.setGroupingUsed(true);
-                        buff.append(nf.format(daysTilXDay()));
+                        buff.append(nf.format(getDaysTilXDay()));
                     }
                     case 'Y' -> buff.append(getYear());
                     case '.' -> buff.append(EXCLAIM[(int) (Math.random() * EXCLAIM.length)]);
