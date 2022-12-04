@@ -1,40 +1,57 @@
 package ddate
 
+import groovy.transform.CompileStatic as CS
 import org.rwtodd.discordian.DiscordianDate as DD
+import java.time.LocalDate
+import org.rwtodd.args.*
 
 /**
  * The CLI runner for the ddate utility
  *
  * @author rwtodd
  */
-class Cmd {
 
-    private static String removeInitialPlus(String s) {
-        if (s.isEmpty() || (s.charAt(0) != '+')) {
-            throw new IllegalArgumentException("Format string must start with a +!");
-        }
-        return s.substring(1);
-    }
+@CS class Cmd {
 
     public static void main(String[] args) {
-        final var todayFmt = "Today is %{%A, the %e day of %B%} in the YOLD %Y%N%nCelebrate %H";
-        final var otherFmt = "%{%A, %B %d%}, %Y YOLD";
+        final var todayFmt = "Today is %{%A, the %e day of %B%} in the YOLD %Y%N%nCelebrate %H"
+        final var otherFmt = "%{%A, %B %d%}, %Y YOLD"
+        final var today = LocalDate.now()
+        final var date = new DateParam([ 'date', 'd'], today, "the date to display (default: today)")
+        final var fmt = new StringParam(['foramt','f'], null, 'the format of the output')
+        final var hlp = new FlagParam(['help'], 'print this help text')
+        final Parser parser = [date,fmt,hlp]
         try {
-            System.out.println(switch (args.length) {
-                case 0 -> new DD().format(todayFmt);
-                case 1 -> new DD().format(removeInitialPlus(args[0]));
-                case 3 -> new DD(Integer.parseInt(args[0]),
-                        Integer.parseInt(args[1]),
-                        Integer.parseInt(args[2])).format(otherFmt);
-                case 4 -> new DD(Integer.parseInt(args[1]),
-                        Integer.parseInt(args[2]),
-                        Integer.parseInt(args[3])).format(removeInitialPlus(args[0]));
-                default -> throw new Exception("Wrong number of arguments!");
-            });
+            final var extras = parser.parse(args)
+            if(hlp.value) { throw new Exception("help text requested") }
+            if(date.value === today && extras.size() == 1) {
+                date.process('date', extras[0])
+            }
+            if(fmt.value === null) {
+                fmt.process("format",  (date.value == today) ? todayFmt : otherFmt)
+            }
+            System.out.println(new DD(date.value).format(fmt.value))
         } catch (Throwable e) {
-            System.err.println("Error: " + e.getMessage());
-            System.err.println("Usage: ddate [+fmt] [year month day]");
-            System.exit(1);
+            System.err.println(e.getMessage());
+            System.err.println('\nUsage: ddate [options] [date]')
+            parser.printHelpText(System.err)
+            System.err.println("""
+Format Strings: (e.g.,  "Today is %{%A, the %E of %B%}!")
+  %A  weekday        /  %a  weekday (short version)
+  %B  season         /  %b  season (short version)
+  %d  day of season  /  %e  ordinal day of season
+  %Y  the Year of Our Lady of Discord
+  %X  the number of days left until X-Day
+ 
+  %H  name of the holy day, if it is one
+  %N  directive to skip the rest of the format
+      if today is not a holy day
+ 
+  %{ ... %}  either announce Tibs Day, or format the
+             interior string if it is not Tibs Day
+          
+  %n  newline        /  %t  tab\n\n
+""")
         }
     }
 }

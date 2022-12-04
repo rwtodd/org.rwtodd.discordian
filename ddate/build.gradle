@@ -4,8 +4,9 @@ plugins {
 }
 
 dependencies {
-  implementation project(':discordian')
-  implementation 'org.apache.groovy:groovy:4.0.6'
+    implementation project(':discordian')
+    implementation 'org.apache.groovy:groovy:4.0.6'
+    implementation 'org.rwtodd:org.rwtodd.args:2.0.0'
 }
 
 application {
