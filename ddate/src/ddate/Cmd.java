@@ -35,6 +35,7 @@ class Cmd {
             System.err.println("\nUsage: ddate [options] [date]");
             parser.printHelpText(System.err);
             System.err.println("""
+
 Format Strings: (e.g.,  "Today is %{%A, the %E of %B%}!")
   %A  weekday        /  %a  weekday (short version)
   %B  season         /  %b  season (short version)
@@ -49,7 +50,7 @@ Format Strings: (e.g.,  "Today is %{%A, the %E of %B%}!")
   %{ ... %}  either announce Tibs Day, or format the
              interior string if it is not Tibs Day
           
-  %n  newline        /  %t  tab\n\n
+  %n  newline        /  %t  tab\n
 """);
         }
     }
