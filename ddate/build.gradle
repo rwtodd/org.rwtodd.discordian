@@ -1,14 +1,28 @@
 plugins {
-   id 'groovy'
+   id 'java'
    id 'application'
 }
 
 dependencies {
     implementation project(':discordian')
-    implementation 'org.apache.groovy:groovy:4.0.6'
-    implementation 'org.rwtodd:org.rwtodd.args:2.0.0'
+    implementation 'org.rwtodd:org.rwtodd.args:2.0.1'
+}
+
+sourceSets {
+  main.java.srcDirs = ['src']
 }
 
 application {
+    mainModule = 'ddate'
     mainClass = 'ddate.Cmd'
 }
+
+// print out the runtime command-line to help run manually...
+// unfortunate to have to ask for a classpath to get a module path,
+// but that is the pain of modular java!
+task rcl {
+    doLast {
+        println("java -p '${sourceSets.main.runtimeClasspath.asPath}' -m ddate")
+    }
+}
+
