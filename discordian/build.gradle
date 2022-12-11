@@ -1,7 +1,13 @@
 plugins {
     // Apply the java-library plugin for API and implementation separation.
     id 'java-library'
+
+    // upload to Maven
+    id 'maven-publish'
+    id 'signing'
 }
+
+archivesBaseName = 'org.rwtodd.discordian'
 
 repositories {
     // Use Maven Central for resolving dependencies.
@@ -9,7 +15,7 @@ repositories {
 }
 
 dependencies {
-    // Use the awesome Spock testing and specification framework even with Java
+    // use junit 5
     testImplementation(platform('org.junit:junit-bom:5.9.1'))
     testImplementation('org.junit.jupiter:junit-jupiter')
 }
@@ -19,4 +25,62 @@ test {
 	testLogging {
 		events "skipped", "failed"
 	}
+}
+
+
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId = 'org.rwtodd.discordian'
+            from components.java
+            pom {
+                name = 'org.rwtodd.discordian'
+                description = 'A discordian date library'
+                url = 'https://github.com/rwtodd/org.rwtodd.discordian'
+                //properties = [ ]
+                licenses {
+                    license {
+                        name = 'MIT License'
+                        url = 'https://opensource.org/licenses/MIT'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'rwtodd'
+                        name = 'Richard Todd'
+                        email = 'rwtodd@users.noreply.github.com'
+                    }
+                }
+                scm {
+                    connection = 'scm:git:https://github.com/rwtodd/org.rwtodd.discordian.git'
+                    developerConnection = 'scm:git:https://github.com/rwtodd/org.rwtodd.discordian.git'
+                    url = 'https://github.com/rwtodd/org.rwtodd.discordian'
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+            url "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2"
+            credentials {
+                username ossrhUsername
+                password ossrhPassword
+            }
+        }
+    }
+}
+
+signing {
+    sign publishing.publications.mavenJava //configurations.archives
+}
+
+javadoc {
+    if(JavaVersion.current().isJava9Compatible()) {
+        options.addBooleanOption('html5',true)
+    }
 }

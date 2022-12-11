@@ -1,6 +1,6 @@
 subprojects {
     version = '1.0.0'
-    group = 'org.rwtodd.discordian'
+    group = 'org.rwtodd'
 
     repositories {
         mavenCentral()
