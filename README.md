@@ -11,6 +11,12 @@ new DiscordianDate(1956,2,19).format(
 // Enjoy Chaoflux"
 ~~~~
 
+## Maven Central
+
+I've published the library to maven central.
+
+    org.rwtodd % org.rwtodd.discordian % 1.0.0
+
 
 ## Other Languages ##
 
