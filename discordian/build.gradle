@@ -1,13 +1,16 @@
 plugins {
     // Apply the java-library plugin for API and implementation separation.
     id 'java-library'
+    id 'jvm-test-suite'
 
     // upload to Maven
     id 'maven-publish'
     id 'signing'
 }
 
-archivesBaseName = 'org.rwtodd.discordian'
+base {
+  archivesName = 'org.rwtodd.discordian'
+}
 
 repositories {
     // Use Maven Central for resolving dependencies.
@@ -15,18 +18,15 @@ repositories {
 }
 
 dependencies {
-    // use junit 5
-    testImplementation(platform('org.junit:junit-bom:5.9.1'))
-    testImplementation('org.junit.jupiter:junit-jupiter')
 }
 
-test {
-	useJUnitPlatform()
-	testLogging {
-		events "skipped", "failed"
-	}
+testing {
+  suites {
+    test {
+        useJUnitJupiter()
+    }
+  }
 }
-
 
 java {
     withJavadocJar()
