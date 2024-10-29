@@ -16,7 +16,7 @@ class Cmd {
         final var otherFmt = "%{%A, %B %d%}, %Y YOLD";
         final var today = LocalDate.now();
         final var date = new DateParam(List.of("date", "d"), today, "the date to display (default: today)");
-        final var fmt = new StringParam(List.of("foramt","f"), null, "the format of the output");
+        final var fmt = new StringParam(List.of("format","f"), null, "<Format String>the format of the output");
         final var hlp = new FlagParam(List.of("help"), "print this help text");
         final var parser = new Parser(date,fmt,hlp);
         try {
